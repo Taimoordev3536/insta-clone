@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="stylesheet/style.css" />
+    
+</head>
+
+<body>
+    <div class="w-full min-h-screen bg-zinc-900 p-10 text-white">
+        <div class="w-full flex justify-end">
+            <a class="bg-red-500 rounded-md px-3 py-2 text-sm mb-5 inline-block" href="/logout">Logout</a>
+            <a class=" mx-3 bg-blue-500 rounded-md px-3 py-2 text-sm mb-5 inline-block" href="/login">Login</a>
+        </div>
+        
+        <!-- Logged-in user's profile -->
+        <div class="flex items-center mb-10">
+            <div class="w-20 h-20 rounded-full overflow-hidden bg-zinc-700 mr-4">
+                <img class="w-full h-full object-cover object-center" src="<%= loggedInUser.image %>" alt="User Image">
+            </div>
+            <div>
+                <a href="/profile" class="text-2xl"><%= loggedInUser.name %></a>
+                <p class="text-zinc-500"><%= loggedInUser.username %></p>
+            </div>
+        </div>
+
+        <h1 class="text-3xl mt-10 tracking-tighter mb-3">All Users</h1>
+        <div class="users flex gap-3 flex-wrap px-20">
+            <% Users.reverse().forEach((user) => { %>
+            <div class="user w-72 p-4 bg-zinc-800 rounded-3xl">
+                <div class="flex justify-center items-center mb-10">
+                    <div class="w-40 h-40 rounded-full overflow-hidden bg-zinc-700 mr-4">
+                        <img class="w-full h-full object-cover object-center" src="<%= user.image %>" alt="User Image">
+                    </div>
+                    </div>
+                <h3 class="text-2xl mt-3 tracking-tighter">
+                    <%= user.name %>
+                </h3>
+                <h5 class="text-zinc-500">
+                    <%= user.email %>
+                </h5>
+
+                <div class="flex gap-3 mt-10">
+                    <a class="text-blue-500" href="/profile/<%= user._id %>">See Profile</a>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+    </div>
+</body>
+</html>

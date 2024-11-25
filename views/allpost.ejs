@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram-like Layout</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body class="bg-gray-900 text-white">
+
+<div class="flex flex-col md:flex-row h-screen">
+    <!-- Sidebar -->
+    <div class="w-full md:w-64 bg-gray-800 p-4 flex flex-col">
+        <div class="text-2xl font-bold mb-6">Instagram</div>
+        <nav>
+            <ul>
+                <li class="mb-8"><a href="/allpost" class="flex items-center"><span class="material-icons">home</span> <span class="ml-2">Home</span></a></li>
+                <li class="mb-8"><a href="/newpost" class="flex items-center"><span class="material-icons">add_circle</span> <span class="ml-2">Create Post</span></a></li>
+                <li class="mb-8"><a href="/profile" class="flex items-center">
+                     <div class="w-7 h-7 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+                        <img class="rounded-full" src="<%=loggedInUser.image  %>" alt="<%=loggedInUser.name  %>">
+                     </div>
+                    <span class="ml-2">Profile</span>
+                </a></li>
+                <li class="mb-8"><form action="/search" method="post">
+                    <input class="mt-2 px-2 h-10 w-56 border-none rounded-md bg-gray-500" type="search" name="searchacc" placeholder="Find your friend....">
+                <button class="bg-blue-500 rounded-md m-1 p-1 font-bold" type="submit">Search</button>
+                </form></li>
+                <li><a href="#" class="flex items-center"><span class="material-icons">more_vert</span> <span class="ml-2">More</span></a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main content -->
+    <div class="flex-1 flex flex-col">
+        <!-- Stories -->
+<div class="flex space-x-4 p-4 border-b border-gray-700 overflow-x-auto">
+    <% stories.forEach(story => { %>
+        <div>
+    <div class="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+        <a href="/story/<%= story._id %>">
+            <img src="<%= story.image %>" alt="Story by <%= story.user.username %>" class="rounded-full object-cover h-full w-full">
+        </a>
+    </div>
+    <% if(story.user.username===loggedInUser.username) {%>
+        <p class="mt-2">Your story</p>
+        
+        <%} else{ %>
+   <p class="mt-2" > <%= story.user.username %></p>
+   <% } %>
+</div>
+    <% }); %>
+
+    <!-- Add New Story -->
+     <div>
+    <div class="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center">
+        <form action="/story" method="POST" enctype="multipart/form-data">
+            <label for="story-upload" class="cursor-pointer">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <input id="story-upload" type="file" name="story" accept="image/*,video/*" class="hidden" onchange="this.form.submit()">
+            </label>
+        </form>
+    </div>
+    <p class="mt-2 text-gray-400">Add Story</p>
+    </div>
+</div>
+
+        
+
+        <!-- Posts -->
+        <div class="flex-1 overflow-y-auto p-4 flex flex-col items-center">
+            <% allPosts.forEach(function(post) { %>
+            <div class="bg-gray-800 p-4 rounded-lg mb-4 w-full max-w-xl">
+               
+               <!-- profile content -->
+                <a href="/profile/<%= post.user._id %>">
+                <div class="flex mb-4 items-center">    
+                    <div class="w-10 h-8 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+                        <img class="rounded-full" src="<%= post.user.image %>" alt="<%= post.user.name %>">
+                    </div>
+                    <div class="ml-4">
+                        <div class="font-bold"><%=post.user.username  %></div>
+                        <div class="text-gray-500 text-sm"><%= post.date.toDateString() %></div>
+                    </div>
+                </div></a>
+                <div class=" mb-2 flex justify-center">
+                    <img src="<%= post.image %>" alt="Post Image" class="rounded-lg mb-4 object-cover" style="width: 470px; height: 470px;">
+                </div>
+               <!-- LIKE -->
+<div class="mb-4 flex items-center">
+    <a href="/like/<%= post._id %>" class="flex items-center">
+        <svg class="ml-4 h-7 w-7" viewBox="0 0 24 24" fill="<%= post.likes.includes(loggedInUser._id) ? 'red' : 'none' %>" xmlns="http://www.w3.org/2000/svg" stroke="<%= post.likes.includes(loggedInUser._id) ? 'red' : '#fcfcfc' %>">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+    </a>
+    <!-- Comments -->
+    <a href="/comment/<%= post._id %>" class="flex items-center">
+        <svg class="ml-4 h-7 w-7" fill="#fcfcfc" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21.71,4.72,19.28,2.29a1,1,0,0,0-1.41,0L12.29,7.87a1,1,0,0,0-.29.71V11a1,1,0,0,0,1,1h2.42a1,1,0,0,0,.71-.29l5.58-5.58A1,1,0,0,0,21.71,4.72ZM15,10H14V9l4.58-4.58,1,1Zm4,2h0a1,1,0,0,0-1,1,7,7,0,0,1-7,7H5.41l.64-.63a1,1,0,0,0,0-1.42A7,7,0,0,1,11,6a1,1,0,0,0,0-2h0A9,9,0,0,0,4,18.62L2.29,20.29a1,1,0,0,0-.21,1.09A1,1,0,0,0,3,22h8a9,9,0,0,0,9-9A1,1,0,0,0,19,12Z"></path>
+        </svg>
+    </a>
+ <!-- Share -->
+<a href="/share/<%= post._id %>" class="flex items-center">
+    <svg class="ml-4 h-7 w-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9.61109 12.4L10.8183 18.5355C11.0462 19.6939 12.6026 19.9244 13.1565 18.8818L19.0211 7.84263C19.248 7.41555 19.2006 6.94354 18.9737 6.58417M9.61109 12.4L5.22642 8.15534C4.41653 7.37131 4.97155 6 6.09877 6H17.9135C18.3758 6 18.7568 6.24061 18.9737 6.58417M9.61109 12.4L18.9737 6.58417M19.0555 6.53333L18.9737 6.58417" stroke="#fcfcfc" stroke-width="2"></path>
+    </svg>
+</a>
+
+</div>
+<!-- Total Likes -->
+<span class="ml-2 font-bold"><%= post.likes.length %> Likes</span>
+
+<!-- content of post -->
+                    <p class="text-sm p-2 tracking-tight bg-zinc-700 rounded-md font-extralight"><%= post.content %></p>
+            <!-- comments -->
+<div class="mt-4">
+    <h3 class="font-bold">Comments:</h3>
+    <ul>
+        <% if (post.comments && post.comments.length > 0) { %>
+        <% post.comments.forEach(comment => { %>
+        <li class="border-t mt-2 pt-2"><strong><%= comment.author %>:</strong> <%= comment.text %> <small>(<%= comment.date.toDateString() %>)</small></li>
+        <% }) %>
+        <% } else { %>
+        <p class="text-gray-500">Add your comment below:</p>
+        <% } %>
+    </ul>
+    <form action="/comment/<%= post._id %>" method="POST" class="mt-4 flex">
+        <input type="text" name="comment" placeholder="Add a comment..." class="border rounded px-2 py-1 mr-2 flex-1" required>
+        <button type="submit" class="bg-green-500 text-white px-4 py-1 rounded">Comment</button>
+    </form>
+</div>
+
+            </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <!-- Right sidebar -->
+    <div class="w-full md:w-64 bg-gray-800 p-4 flex flex-col">
+        <a href="/profile/<%= loggedInUser._id %>">
+        <div class="mb-4 mt-2 flex items-center">
+            <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+                <img class="rounded-full" src="<%=loggedInUser.image  %>" alt="<%=loggedInUser.name  %>">
+            </div>
+            <div class="ml-4">
+                <div class="font-bold">
+                    <a href="/profile"><%= loggedInUser.name %></a>
+                </div>
+                <button class="text-gray-500"><%= loggedInUser.username %></button>
+            </div></a>
+            <div class="font-bold ml-7">
+                <a class="text-blue-600" href="/logout">Switch</a>
+            </div>
+        </div>
+
+        <div class="font-bold mt-2 mb-4 text-gray-400">Suggested for you</div>
+        <% suggestions.reverse().forEach((user) => { %>
+        <ul class="mt-2">
+            <li class="mb-4 flex items-center">
+                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+                    <img class="rounded-full" src="<%=user.image  %>" alt="<%=user.name  %>">
+                </div>
+                <div class="ml-4 mt-2">
+                    <div class="font-bold">
+                        <a class="font-bold" href="/profile/<%= user._id %>"><%=user.username  %></a>
+                    </div>
+                    <form action="/follow/<%= user._id %>" method="POST">
+                        <button class="mt-1 px-4 py-1 text-sm font-semibold text-blue-600 border-none" type="submit">Follow</button>
+                      </form>
+                </div>
+            </li>
+        </ul>
+        <% }); %>
+    </div>
+</div>
+
+</body>
+</html>

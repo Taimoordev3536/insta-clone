@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="w-full min-h-screen bg-zinc-900 text-white p-10">
+    <h5 class="md-5">You Can Create A new Post</h5>
+
+        <form action="/post" method="post">
+            <textarea class="my-3 block p-1 outline-none w-1/3 resize-none bg-transparent border-2 border-zinc-800 rounded-md" name="content" id="" placeholder="Whats in your mind..?"></textarea>
+            <input class="px-3 py-2 outline-none bg-transparent border-2 border-zinc-800 rounded-md" type="text" placeholder="image-url" name="image" id="">
+
+            <input class="w-40 my-3 rounded-md block px-3 py-2 bg-blue-500" type="submit" name="" value="Create New Post">
+        </form>
+    </div>
+</body>
+</html>
